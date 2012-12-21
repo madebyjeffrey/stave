@@ -30,8 +30,8 @@ int main(int argc, char** argv) {
     std::cout << " a = " << std::endl << a << std::endl;
     std::cout << " b = " << std::endl << b << std::endl;
 
-    auto c = b - 1;
-//    std::cout << " a + b = " << std::endl << c << std::endl;
+    auto c = a + 1;
+    std::cout << " a + b = " << std::endl << c << std::endl;
 
     return 0;
 }

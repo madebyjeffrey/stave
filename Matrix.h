@@ -147,7 +147,8 @@ namespace drakej
         }
         
         template<typename Y>
-        std::enable_if<std::is_arithmetic<Y>::value, Matrix>
+//        std::enable_if<std::is_arithmetic<Y>::value, Matrix>
+        Matrix
         operator+(Y y) const
         {
             Matrix dst(*this);
@@ -165,7 +166,7 @@ namespace drakej
             Matrix dst(*this);
             
             std::for_each(std::begin(dst.p_), std::end(dst.p_), 
-                    [&y](T&c) { c -= y; });
+                    [&y](T&c) { c = c - y; });
             
             return dst;
         }
