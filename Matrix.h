@@ -92,7 +92,7 @@ namespace drakej
             std::size_t index = 0;
             bool first = true;
             
-            std::size_t width = digits_ante_dot() + precision_ + 1 + 1; // 1 for decimal, 1 for space on either side
+            std::size_t width = digits_ante_dot() + precision_ + 1 + 2; // 1 for decimal, 1 for space on either side
             
             for_each(std::begin(p_), std::end(p_), 
                     [&index, this, &first, &os, &width](T const&it)
@@ -147,9 +147,7 @@ namespace drakej
         }
         
         template<typename Y>
-        typename std::conditional<std::is_arithmetic<Y>::value,
-                Matrix,
-                std::false_type>
+        std::enable_if<std::is_arithmetic<Y>::value, Matrix>
         operator+(Y y) const
         {
             Matrix dst(*this);
@@ -161,9 +159,7 @@ namespace drakej
         }
         
         template<typename Y>
-        typename std::conditional<std::is_arithmetic<Y>::value,
-                Matrix,
-                std::false_type>
+        Matrix                          // enable if is not working here for some reason
         operator-(Y y) const
         {
             Matrix dst(*this);
