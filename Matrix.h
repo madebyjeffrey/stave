@@ -130,7 +130,49 @@ namespace drakej
             } else throw std::domain_error("Matrix sizes mismatch");
         }
         
+        Matrix operator-(Matrix const &m) const
+        {
+            if (this->col_ == m.col_ && this->row_ == m.row_)
+            {
+                Matrix dst(this->row_, this->row_);
+                
+                std::transform(std::begin(m.p_), std::end(m.p_), 
+                        std::begin(this->p_),
+                        std::begin(dst.p_),
+                        std::minus<T>());
+                
+                return dst;
+            } else throw std::domain_error("Matrix sizes mismatch");
+            
+        }
         
+        template<typename Y>
+        typename std::conditional<std::is_arithmetic<Y>::value,
+                Matrix,
+                std::false_type>
+        operator+(Y y) const
+        {
+            Matrix dst(*this);
+           
+            std::for_each(std::begin(dst.p_), std::end(dst.p_), 
+                    [&y](T &c) { c += y; });
+                    
+            return dst;
+        }
+        
+        template<typename Y>
+        typename std::conditional<std::is_arithmetic<Y>::value,
+                Matrix,
+                std::false_type>
+        operator-(Y y) const
+        {
+            Matrix dst(*this);
+            
+            std::for_each(std::begin(dst.p_), std::end(dst.p_), 
+                    [&y](T&c) { c -= y; });
+            
+            return dst;
+        }
     };
     
    
