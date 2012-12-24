@@ -140,7 +140,7 @@ namespace drakej
                 
                 first = false;
                 
-                os << std::setw(width) << std::setprecision(precision_) << std::fixed << it;
+                os << std::setw(width) << std::setprecision(this->precision_) << std::fixed << it;
                 
                 index++;
             });

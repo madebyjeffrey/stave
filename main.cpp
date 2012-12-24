@@ -29,6 +29,8 @@ int main(int argc, char** argv) {
 
     std::cout << " a = " << std::endl << a << std::endl;
     std::cout << " b = " << std::endl << b << std::endl;
+    
+    auto colit = a.column_begin();
 
     auto c = a + 1;
     std::cout << " a + b = " << std::endl << c << std::endl;
