@@ -17,6 +17,41 @@ namespace drakej
     template<typename T, typename Enable = void>
     class Matrix;
     
+    template<typename T, typename Enable = void>
+    class StridedIterator;
+    
+    template<typename T>
+    class StridedIterator<T, typename std::enable_if<std::is_arithmetic<T>::value::type>>
+        : public std::iterator<std::random_access_iterator_tag, T>
+    {
+        std::vector<T> &vec_;
+        typename std::vector<T>::iterator it_;
+        std::ptrdiff_t stride_;
+        
+        friend Matrix<T>;
+        
+        StridedIterator(std::vector<T> &vec, 
+                std::ptrdiff_t start,
+                std::ptrdiff_t increment,
+                std::ptrdiff_t count) 
+        : vec_(vec), it_(std::begin(vec)), stride_(increment)
+        {
+            std::advance(it_, start);
+        }
+        
+        public:
+        StridedIterator(StridedIterator &it)
+        : vec_(it.vec_), it_(it.it_), stride_(it.stride_)
+        {
+        }
+        
+        StridedIterator(StridedIterator &&it)
+        : vec_(it.vec_), it_(it.it_), stride_(it.stride_)
+        {
+        }
+    };
+ 
+    
     template<typename T>
     class Matrix<T, typename std::enable_if<std::is_arithmetic<T>::value>::type>
     {
@@ -169,6 +204,11 @@ namespace drakej
                     [&y](T&c) { c = c - y; });
             
             return dst;
+        }
+        
+        auto column_begin() -> StridedIterator<T>
+        {
+            return StridedIterator<T>(p_, 0, col_, 0);
         }
     };
     
