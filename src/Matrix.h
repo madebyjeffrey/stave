@@ -10,6 +10,7 @@
 #include <functional>
 #include <stdexcept>
 #include <limits>
+#include <memory>
 
 namespace drakej
 {
@@ -21,33 +22,89 @@ namespace drakej
     class StridedIterator;
     
     template<typename T>
-    class StridedIterator<T, typename std::enable_if<std::is_arithmetic<T>::value::type>>
+    class StridedIterator<T, typename std::enable_if<std::is_arithmetic<T>::value>::type>
         : public std::iterator<std::random_access_iterator_tag, T>
     {
-        std::vector<T> &vec_;
-        typename std::vector<T>::iterator it_;
-        std::ptrdiff_t stride_;
+        using size_type = typename std::vector<T>::size_type;
+        using difference_type = typename std::vector<T>::difference_type;
+
+        std::vector<T>& vec_;
+        size_type offset_;
+        difference_type stride_;
         
         friend Matrix<T>;
         
-        StridedIterator(std::vector<T> &vec, 
-                std::ptrdiff_t start,
-                std::ptrdiff_t increment,
-                std::ptrdiff_t count) 
-        : vec_(vec), it_(std::begin(vec)), stride_(increment)
+        StridedIterator(std::vector<T>& vec, size_type start, difference_type increment)
+        : vec_(vec), offset_(start), stride_(increment)
         {
-            std::advance(it_, start);
+        }
+
+        StridedIterator<T>& onepluslast()
+        {
+            offset_ = vec_.size();
+            return *this;
         }
         
         public:
-        StridedIterator(StridedIterator &it)
-        : vec_(it.vec_), it_(it.it_), stride_(it.stride_)
+        StridedIterator(StridedIterator& it)
+        : vec_(it.vec_), offset_(it.offset_), stride_(it.stride_)
         {
         }
         
-        StridedIterator(StridedIterator &&it)
-        : vec_(it.vec_), it_(it.it_), stride_(it.stride_)
+        StridedIterator(StridedIterator&& it)
+        : vec_(it.vec_), offset_(it.offset_), stride_(it.stride_) 
         {
+        }
+
+
+
+        StridedIterator &operator++()
+        {
+            offset_ += stride_;
+
+            return *this; 
+        }
+
+        StridedIterator &operator--()
+        {
+            offset_ -= stride_;
+
+            return *this;
+        }
+        
+
+        T operator*()
+        {
+            return vec_[offset_];
+        }
+
+        // any offset past the end is equal to any other offset past the end
+        bool operator==(StridedIterator const& it) const
+        {
+            // this == it
+
+            if (it.vec_ != vec_)
+                return false; // not the same matrix
+
+            // check for end iterator in it
+            if (it.offset_ >= vec_.size())
+            {
+                return offset_ >= vec_.size();
+            }
+
+            // check to see if we are an end iterator
+            if (offset_ >= vec_.size())
+            {
+                return it.offset_ >= vec_.size();
+            }
+
+            // otherwise, just compare them
+            return it.offset_ == offset_;
+        }
+
+        bool operator!=(StridedIterator const& it) const
+        {
+            return !(operator==(it));
         }
     };
  
@@ -83,7 +140,7 @@ namespace drakej
         }
         
         Matrix(std::size_t row, std::size_t col, 
-                std::initializer_list<T> l) : row_(row), col_(col), p_(l)
+                std::initializer_list<T> l) :  p_(l), row_(row), col_(col)
         {
 //            static_assert(row * col == l.size(), "Initializer must be equal to size of matrix");
             if (row * col != l.size())
@@ -206,9 +263,17 @@ namespace drakej
             return dst;
         }
         
-        auto column_begin() -> StridedIterator<T>
+        auto column_begin(size_t column = 0) -> StridedIterator<T>
         {
-            return StridedIterator<T>(p_, 0, col_, 0);
+            return StridedIterator<T>(p_, column, col_);
+        }
+
+        auto column_end(size_t column = 0) -> StridedIterator<T>
+        {
+            StridedIterator<T> it(p_, 0, 0);
+            it.onepluslast();
+
+            return it;
         }
     };
     
