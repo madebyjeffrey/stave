@@ -30,18 +30,20 @@ int main(int argc, char** argv) {
     std::cout << " a = " << std::endl << a << std::endl;
     std::cout << " b = " << std::endl << b << std::endl;
     
-    // auto colit = a.column_begin();
-    // std::cout << *colit << std::endl;
-    // ++colit;
-    // std::cout << *colit << std::endl;
-
-    for (auto it = a.column_begin(2); it != a.column_end(); ++it)
+    /*for (auto it = a.column_begin(2); it != a.column_end(); ++it)
     {
         std::cout << *it << std::endl;
+    }*/
+
+    
+    for (int i = 0; i < 3; ++i)
+    {
+        std::cout << a(0, i) << std::endl;
     }
 
-    auto c = a + 1;
+    auto c = a * b;
     std::cout << " a + b = " << std::endl << c << std::endl;
+
 
     return 0;
 }
