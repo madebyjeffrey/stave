@@ -1,4 +1,7 @@
 
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include <vector>
 #include <type_traits>
 #include <algorithm>
@@ -11,6 +14,8 @@
 #include <stdexcept>
 #include <limits>
 #include <memory>
+
+// #include "Tensor.h"
 
 namespace drakej
 {
@@ -248,7 +253,6 @@ namespace drakej
             else throw std::domain_error("Matrix sizes mismatch");
         }
 
-
     };
     
    
@@ -259,3 +263,5 @@ operator<<(std::ostream &os, drakej::Matrix<T, U> const &m)
 {
     return m.print(os);
 }
+
+#endif

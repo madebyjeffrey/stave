@@ -10,8 +10,8 @@ link_directories("/usr/local/lib")
 # -stdlib=libc++
 # -Werror
 # -Weffc++ 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -stdlib=libc++  -g -Wall -Wextra -Wno-unused-parameter -Wno-missing-braces -Weffc++")
-
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11   -g -Wall -Wextra -Wno-unused-parameter -Wno-missing-braces -Weffc++")
+# -stdlib=libc++
 include_directories("include")
 add_executable(stave src/main.cpp)
 # target_link_libraries(ray "gd")
@@ -32,3 +32,5 @@ add_executable(stave src/main.cpp)
 #add_test(test ${CMAKE_CURRENT_BINARY_DIR}/test)
 
 #add_executable(test3 tests/triangle_test.cxx src/geometry.cpp src/linear_algebra.cpp)
+
+add_executable(product src/product.cpp)
