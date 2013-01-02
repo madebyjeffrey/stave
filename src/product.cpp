@@ -36,26 +36,26 @@ product2(R&& f, T&& t, P&&... p)
 
 template<typename... T, typename R>
 constexpr auto 
-product3(R&& f, T&&... ps, std::tuple<T&&...> ts)
+product3(R&& f, T&&... ps, std::tuple<T...> ts)
 -> decltype(product2(std::forward<R>(f), std::forward<T>(ps)...))
 {
-	return product2(std::forward<R>(f), std::forward<T&&>(ps)...);
+	return product2(std::forward<R>(f), std::forward<T>(ps)...);
 }
 
 
 template<typename... T, typename... P, typename R>
 constexpr auto
-product3(R&& f, P&&... ps, std::tuple<T&&...> ts)
+product3(R&& f, P&&... ps, std::tuple<T...> ts)
 -> typename std::enable_if<sizeof...(T) != sizeof...(P), 
 	decltype(product3(std::forward<R>(f), 
 		std::forward<P>(ps)...,
 		std::forward<decltype(std::get<sizeof...(ps)>(ts))>(std::get<sizeof...(ps)>(ts)),
-		std::forward<std::tuple<T&&...>>(ts)))>::type
+		std::forward<std::tuple<T...>>(ts)))>::type
 {
 	return product3(std::forward<R>(f), 
 		std::forward<P>(ps)...,
 		std::forward<decltype(std::get<sizeof...(ps)>(ts))>(std::get<sizeof...(ps)>(ts)),
-		std::forward<std::tuple<T&&...>>(ts));
+		std::forward<std::tuple<T...>>(ts));
 }
 
 
